@@ -53,14 +53,45 @@
   function control() {
     document.querySelector('#control').innerHTML = `
     <ul>
-      <li><a href="/create">create</a></li>
+      <li>
+        <a
+        onclick="
+          event.preventDefault();
+        "
+        href="/create">create</a></li>
       <li><input type="button" value="delete"></li>
     </ul>
     `
   }
 
-  function article() {
-    const state = store.getState();
+  function articleCreate(state) {
+    document.querySelector('#content').innerHTML = `
+    <article>
+      <form onsubmit="
+        event.preventDefault();
+        const _title = this.title.value;
+        const _desc = this.desc.value;
+        store.dispatch({
+          type: 'CREATE',
+          title: _title,
+          desc: _desc
+        })
+      ">
+        <p>
+          <input type="text" name="title" placeholder="title">
+        </p>
+        <p>
+          <textarea name="desc" placeholder="description"></textarea>
+        </p>
+        <p>
+          <input type="submit">
+        </p>
+      </form>
+    </article>
+    `
+  }
+
+  function articleRead(state) {
     const selectedContent = state.contents.filter((content) => 
       content.id === state.selected_id
     );
@@ -73,10 +104,21 @@
     `
   }
 
+  function article() {
+    const state = store.getState();
+    if(state.mode === 'create') {
+      articleCreate(state);
+    } else if(state.mode === 'read') {
+      articleRead(state);
+    }
+  }
+
   function reducer(state, action) {
     if(state === undefined) {
       return {
-        selected_id: 2,
+        maxId: 2,
+        mode: 'create',
+        selected_id: 1,
         contents : [
           {id: 1, title: 'HTML', desc:'HTML is ..'},
           {id: 2, title: 'CSS', desc:'CSS is ..'},
@@ -86,11 +128,22 @@
     const newState = {};
     if(action.type === 'SELECT') {
       Object.assign(newState, state, {selected_id:action.id})
+    } else if(action.type === 'CREATE') {
+      const newMaxId = state.maxId + 1;
+      const newContents = state.contents.concat();
+      newContents.push({id:newMaxId, title:action.title, desc:action.desc})
+      Object.assign(newState, state, 
+      {
+        maxId: newMaxId,
+        contents: newContents,
+        mode: 'read'
+      })
     }
     return newState;
   }
   const store = Redux.createStore(reducer);
   store.subscribe(article);
+  store.subscribe(TOC);
   subject();
   TOC();
   control();
