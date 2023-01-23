@@ -9,6 +9,8 @@
 
 ### Redux 개념 학습
 
+![redux-structure](./redux_structure.png)
+
 <br>
 
 1. store에는 정보가 저장됨
