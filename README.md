@@ -205,3 +205,40 @@ const store = createStore(rootReducer)
 
 react-redux 라이브러리 활용
 
+```tsx
+// src/index.tsx
+
+import { Provider } from 'react-redux';
+
+const store = createStore(rootReducer)
+
+const render = () => root.render(
+  <React.StrictMode>
+    <Provider store={store}>
+      <App
+        ...
+      />
+    </Provider>
+  </React.StrictMode>
+);
+render();
+```
+
+## useSelector, useDispatch
+
+리덕스의 Hooks 역할
+
+### useSelector : store의 값을 가져올 수 있음
+
+```tsx
+// src/reducer/index.tsx에 RootState 타입 생성
+export type RootState = ReturnType<typeof rootReducer>
+
+// 생성한 RootState를 src/App.tsx의 state 객체에 제공
+const counter = useSelector((state: RootState) => state.counter);
+const todos: string[] = useSelector((state: RootState) => state.todos);
+
+
+```
+
+### useDispatch : store에 있는 dispatch 함수에 접근할 수 있음
