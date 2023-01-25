@@ -49,3 +49,154 @@
 
 1. 상호작용이 많은 컴포넌트의 수가 늘어날 수록 Redux 없이 코드를 관리하기 어려움
 2. 변경된 상태를 기록하여 과거의 상태를 참조할 수 있음
+
+<br>
+
+---
+
+<br>
+
+# Inflean 따라하는 리액트 A-Z : 리덕스
+
+## TSX와 Redux를 활용한 간단한 카운터 앱 만들기
+
+<br>
+
+### reducer
+
+```typescript
+// src/reducer/index.tsx
+
+const counter = (state=0, action: {type:string}) => {
+  switch (action.type) {
+    case 'INCREMENT':
+      return state+1
+    case 'DECREMENT':
+      return state-1
+    default:
+      return state
+  }
+}
+
+export default counter;
+```
+
+### createStore()
+
+```typescript
+// src/index.tsx
+
+import counter from './reducer';
+import { createStore } from 'redux';
+
+const store = createStore(counter)
+```
+
+### getStore()
+
+```typescript
+// src/index.tsx
+
+<App
+  value={store.getState()}
+  onIncrement={() => store.dispatch({type:'INCREMENT'})}
+  onDecrement={() => store.dispatch({type:'DECREMENT'})}
+/>
+```
+
+### subscribe()
+
+```typescript
+// src/index.tsx
+
+const render = () => root.render(
+  ...
+);
+render();
+
+store.subscribe(render);
+```
+
+### App.tsx
+
+```typescript
+// src/App.tsx
+
+type Props = {
+  value: number;
+  onIncrement: () => void;
+  onDecrement: () => void;
+}
+
+function App({value, onIncrement, onDecrement}: Props) {
+  return (
+    <div className="App">
+      Clicked: {value} times
+      <button onClick={onIncrement}>
+        +
+      </button>
+      <button onClick={onDecrement}>
+        -
+      </button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+---
+
+## CombineReducer(Counter + Todo)
+
+<br>
+
+### rootReducer 생성
+
+```tsx
+// src/reducer/index.tsx
+
+import { combineReducers } from "redux";
+import counter from "./counter";
+import todos from "./todos";
+
+const rootReducer = combineReducers({
+  counter,
+  todos
+})
+
+export default rootReducer;
+```
+
+```tsx
+// src/reducer/todos.tsx
+
+enum ActionType {
+  ADD_TODO = 'ADD_TODO',
+  DELETE_TODO = 'DELETE_TODO'
+}
+
+interface Action {
+  type: ActionType;
+  text: string
+}
+
+const todos = (state=[], action: Action) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return [...state, action.text]
+    default:
+      return state
+  }
+}
+
+export default todos;
+```
+
+```tsx
+// src/index.tsx
+
+import rootReducer from './reducer';
+
+const store = createStore(rootReducer)
+```
