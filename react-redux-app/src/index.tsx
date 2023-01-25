@@ -26,10 +26,10 @@ const render = () => root.render(
 render();
 
 store.subscribe(render);
-store.dispatch({
-  type: 'ADD_TODO',
-  text: 'Use Redux'
-})
+// store.dispatch({
+//   type: 'ADD_TODO',
+//   text: 'Use Redux'
+// })
 
 console.log(store.getState())
 // If you want to start measuring performance in your app, pass a function
