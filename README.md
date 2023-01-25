@@ -359,3 +359,13 @@ export const fetchPosts = ():any => async(dispatch: any, getState: any) => {
   dispatch({type: "FETCH_POSTS", payload: response.data})
 }
 ```
+
+---
+
+## Redux Toolkit
+
+```
+$ npx create-react-app react-redux-toolkit --template redux-typescript
+```
+
+---
