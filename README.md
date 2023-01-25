@@ -147,7 +147,7 @@ export default App;
 
 ---
 
-## CombineReducer(Counter + Todo)
+## combineReducer(Counter + Todo)
 
 <br>
 
@@ -200,3 +200,8 @@ import rootReducer from './reducer';
 
 const store = createStore(rootReducer)
 ```
+
+## provider
+
+react-redux 라이브러리 활용
+
