@@ -281,3 +281,81 @@ const loggerMiddleware = (store: any) => (next: any) => (action: any) => {
 const middleware = applyMiddleware(loggerMiddleware);
 const store = createStore(rootReducer, middleware);
 ```
+
+### redux thunk
+
+리덕스를 사용하는 앱에서 비동기 작업을 할 때 많이 사용하는 방식
+
+```tsx
+// src/reducer/posts.tsx
+
+enum ActionType {
+  FETCH_POSTS = 'FETCH_POSTS',
+  DELETE_POSTS = 'DELETE_POSTS'
+}
+
+interface Post {
+  userId: number;
+  id: number;
+  titile: string;
+}
+
+interface Action {
+  type: ActionType;
+  payload: Post[]
+}
+
+const posts = (state=[], action: Action) => {
+  switch (action.type) {
+    case 'FETCH_POSTS':
+      return [...state, ...action.payload]
+    default:
+      return state
+  }
+}
+
+export default posts;
+```
+
+```tsx
+// src/App.tsx
+
+...
+useEffect(() => {
+  dispatch(fetchPosts())
+}, [dispatch])
+
+const fetchPosts = ():any => {
+  return async function fetchPostsThunk(dispatch:any, getState:any) {
+    const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
+    dispatch({type: "FETCH_POSTS", payload: response.data})
+  }
+}
+...
+
+```
+
+actions는 객체여야하는데, 함수를 dispatch 하면 에러가 남.
+함수를 dispatch 할 수 있게 해주는 redux-thunk 미들웨어 설치해 사용.
+
+```bash
+$ npm install redux-thunk
+```
+
+```tsx
+// src/index.tsx
+
+import thunk from 'redux-thunk'
+
+const middleware = applyMiddleware(thunk, loggerMiddleware);
+```
+
+```tsx
+// src/actions/posts.tsx
+
+
+export const fetchPosts = ():any => async(dispatch: any, getState: any) => {
+  const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
+  dispatch({type: "FETCH_POSTS", payload: response.data})
+}
+```
