@@ -201,6 +201,8 @@ import rootReducer from './reducer';
 const store = createStore(rootReducer)
 ```
 
+---
+
 ## provider
 
 react-redux 라이브러리 활용
@@ -224,6 +226,8 @@ const render = () => root.render(
 render();
 ```
 
+---
+
 ## useSelector, useDispatch
 
 리덕스의 Hooks 역할
@@ -232,9 +236,11 @@ render();
 
 ```tsx
 // src/reducer/index.tsx에 RootState 타입 생성
+
 export type RootState = ReturnType<typeof rootReducer>
 
 // 생성한 RootState를 src/App.tsx의 state 객체에 제공
+
 const counter = useSelector((state: RootState) => state.counter);
 const todos: string[] = useSelector((state: RootState) => state.todos);
 
@@ -242,3 +248,36 @@ const todos: string[] = useSelector((state: RootState) => state.todos);
 ```
 
 ### useDispatch : store에 있는 dispatch 함수에 접근할 수 있음
+
+```tsx
+// src/App.tsx
+
+function App({value, onIncrement, onDecrement}: Props) {
+  const dispatch = useDispatch();
+  ...
+
+  dispatch({ type: "ADD_TODO", text: todoValue })
+  ...
+```
+
+---
+
+## redux middleware
+
+* 리덕스 미들웨어는 액션을 dispatch 전달하고 reducer에 도달하는 순간 사이에 사전에 지정된 작업을 실행할 수 있게 해주는 중간자 역할
+
+* 로깅, 충돌보고, 비동기API와의 통신, 라우팅 등을 위해 사용
+
+### redux login middleware 생성
+
+```tsx
+// src/index.tsx
+const loggerMiddleware = (store: any) => (next: any) => (action: any) => {
+  console.log("store", store);
+  console.log("action", action)
+  next(action);
+}
+
+const middleware = applyMiddleware(loggerMiddleware);
+const store = createStore(rootReducer, middleware);
+```
